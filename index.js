@@ -29,6 +29,9 @@ const saveCity = async (city) => {
   }
 };
 
+// const city = process.env.CITY;
+// console.log(city);
+
 const getForcast = () => {
   try {
     const resp = getWeather(process.env.CITY ?? "Uzbekistan");
