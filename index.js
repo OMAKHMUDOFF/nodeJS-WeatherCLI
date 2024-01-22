@@ -1,7 +1,11 @@
 import getArgs from "./helpers/args.js";
 import { getWeather } from "./services/api.service.js";
 import { printErr, printHelp, printSucc } from "./services/log.service.js";
-import { TOKEN_DICTIONARY, saveKeyVal } from "./services/storage.service.js";
+import {
+  TOKEN_DICTIONARY,
+  getKeyVal,
+  saveKeyVal,
+} from "./services/storage.service.js";
 
 const saveToken = async (token) => {
   if (!token.length) {
@@ -32,9 +36,10 @@ const saveCity = async (city) => {
 // const city = process.env.CITY;
 // console.log(city);
 
-const getForcast = () => {
+const getForcast = async () => {
   try {
-    const resp = getWeather(process.env.CITY ?? "Uzbekistan");
+    const city = process.env.CITY ?? (await getKeyVal(TOKEN_DICTIONARY.city));
+    const resp = await getWeather(city);
     console.log(resp);
   } catch (error) {
     if (error?.resp.status == 404) {
@@ -49,7 +54,6 @@ const getForcast = () => {
 
 const startCLI = () => {
   const args = getArgs(process.argv);
-  console.log(process.env);
   if (args.h) {
     return printHelp();
     // help
@@ -62,7 +66,7 @@ const startCLI = () => {
     return saveToken(args.t);
     // save token
   }
-  getForcast();
+  return getForcast();
   // result
 };
 
