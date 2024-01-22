@@ -1,6 +1,11 @@
 import getArgs from "./helpers/args.js";
-import { getWeather } from "./services/api.service.js";
-import { printErr, printHelp, printSucc } from "./services/log.service.js";
+import { getIcons, getWeather } from "./services/api.service.js";
+import {
+  printErr,
+  printHelp,
+  printSucc,
+  printWeather,
+} from "./services/log.service.js";
 import {
   TOKEN_DICTIONARY,
   getKeyVal,
@@ -40,9 +45,9 @@ const getForcast = async () => {
   try {
     const city = process.env.CITY ?? (await getKeyVal(TOKEN_DICTIONARY.city));
     const resp = await getWeather(city);
-    console.log(resp);
+    printWeather(resp, getIcons(resp.weather[0].icon));
   } catch (error) {
-    if (error?.resp.status == 404) {
+    if (error?.resp?.status == 404) {
       printErr("City not found");
     } else if (error?.resp?.status == 401) {
       printErr("Invalid Token");
